@@ -10,9 +10,15 @@ class Mailer {
    * @var Config
    */
   protected $_config = NULL;
+
+  /**
+   *
+   * @var Mailer
+   */
   protected static $instance = null;
 
   /**
+   * Returns an instance of a this class
    * 
    * @return Mailer
    */
@@ -24,10 +30,20 @@ class Mailer {
     return self::$instance;
   }
 
+  /**
+   * Class constructor
+   * 
+   */
   protected function __construct() {
     $this->_config = Config::getInstance();
   }
 
+  /**
+   * Sends a mail
+   * 
+   * @param string $content
+   * @return boolean
+   */
   public function sendMail($content) {
     $to = $this->_getConf('mailto');
     $from = $this->_getConf('mailfrom');
@@ -37,6 +53,12 @@ class Mailer {
     return mail($to, $this->_replacePlaceholders($obj), $content, "From: $nicefrom <$from>\r\n");
   }
 
+  /**
+   * Replaces a string with placeholder
+   * 
+   * @param string $string
+   * @return string
+   */
   protected function _replacePlaceholders($string) {
     $_string = str_replace("%data%", date("d/m/Y"), $string);
     return $_string;

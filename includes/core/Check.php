@@ -1,23 +1,40 @@
 <?php
 
+/**
+ * Abstract class to perform checks
+ */
 abstract class Check {
 
+  /**
+   * An array of errors
+   *
+   * @var array 
+   */
   protected $_error_messages = array();
 
   /**
+   * The database connection
    *
    * @var Database
    */
   protected $_database = NULL;
+
+  /**
+   * The configuration class
+   *
+   * @var Config
+   */
   protected $_configs = NULL;
 
-//  public abstract function check();
-
+  /**
+   * Return the name of the currently performed check
+   */
   public abstract function getCheckName();
 
-  public function hasErrors() {
-    return (boolean) count($this->_error_messages);
-  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  /////////////////////////  DATABASE CONNECTION  //////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
 
   /**
    * 
@@ -30,7 +47,52 @@ abstract class Check {
     return $this->_database;
   }
 
+  //////////////////////////////////////////////////////////////////////////////
+  /////////////////////////  ERROR HANDLING  ///////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+
   /**
+   * Tells whether there are errors or not
+   * 
+   * @return boolean
+   */
+  public function hasErrors() {
+    return (boolean) count($this->_error_messages);
+  }
+
+  /**
+   * Returns an error to be printed
+   * 
+   * @return string
+   */
+  public function printErrorMessages() {
+    return implode("\n", $this->_error_messages);
+  }
+
+  /**
+   * Returns all the errors
+   * 
+   * @return array
+   */
+  public function getErrorMessages() {
+    return $this->_error_messages;
+  }
+
+  /**
+   * Adds an error
+   * 
+   * @param string $error_message
+   */
+  public function pushErrorMessage($error_message) {
+    $this->_error_messages[] = "- " . $error_message;
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  /////////////////////////  CONFIGURATION HANDLING  ///////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Returns the configuration class
    * 
    * @return Config
    */
@@ -41,25 +103,15 @@ abstract class Check {
     return $this->_configs;
   }
 
+  /**
+   * Loads a generic configuration
+   *  
+   * @param string $configuration
+   * @return string
+   */
   public function getConfiguration($configuration) {
     return $this->getConfigurations()->getConfiguration($configuration);
   }
-
-  public function printErrorMessages() {
-    return implode("\n", $this->_error_messages);
-  }
-
-  public function getErrorMessages() {
-    return $this->_error_messages;
-  }
-
-  public function pushErrorMessage($error_message) {
-    $this->_error_messages[] = "- " . $error_message;
-  }
-
-  //////////////////////////////////////////////////////////////////////////////
-  /////////////////////////  CONFIGURATION HANDLING  ///////////////////////////
-  //////////////////////////////////////////////////////////////////////////////
 
   /**
    * Loads a configuration

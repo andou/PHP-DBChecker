@@ -12,7 +12,7 @@ abstract class Check {
   protected $_configs = NULL;
 
 //  public abstract function check();
-  
+
   public abstract function getCheckName();
 
   public function hasErrors() {
@@ -54,7 +54,21 @@ abstract class Check {
   }
 
   public function pushErrorMessage($error_message) {
-    $this->_error_messages[] = "- ".$error_message;
+    $this->_error_messages[] = "- " . $error_message;
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  /////////////////////////  CONFIGURATION HANDLING  ///////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Loads a configuration
+   * 
+   * @param string $conf_name
+   * @return string
+   */
+  protected function _getConf($conf_name) {
+    return $this->getConfiguration('checks_' . $conf_name);
   }
 
 }

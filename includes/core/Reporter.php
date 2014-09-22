@@ -34,40 +34,41 @@ class Reporter {
     if ($this->_getConf('printfile') == 'true') {
       $this->saveFile($results);
     }
-    if ($this->_getConf('mailsend') == 'true') {
+    if ($this->_getConf('sendmail') == 'true') {
       $sent = $this->sendMail($results);
     }
   }
 
+  protected function _replaceEol($content) {
+    return str_replace($this->_newline, PHP_EOL, $content);
+  }
+
   protected function echoResults($results) {
     if (defined("ISCLI") && ISCLI === TRUE) {
-      echo str_replace($this->_newline, PHP_EOL, $results);
+      echo $this->_replaceEol($results);
     } else {
       echo $results;
     }
   }
 
   protected function sendMail($results) {
-    $to = $this->_getConf('mailto');
-    $from = $this->_getConf('mailfrom');
-    $_nicefrom = $this->_getConf('mailnicefrom');
-    $nicefrom = $_nicefrom ? $_nicefrom : "Reporter";
-    $obj = $this->_getConf('mailobj');
-    return mail($to, $this->replacePlaceholders($obj), str_replace($this->_newline, PHP_EOL, $results), "From: $nicefrom <$from>\r\n");
-  }
-
-  protected function replacePlaceholders($string) {
-    $_string = str_replace("%data%", date("d/m/Y"), $string);
-    return $_string;
+    return Mailer::getInstance()->sendMail($this->_replaceEol($results));
   }
 
   protected function saveFile($results) {
-    $folder = ROOT_DIR . "/" . rtrim(ltrim($this->_getConf('folder'), "/"), "/") . "/";
-    $date = date($this->_getConf('dateformat'));
-    $filename = $folder . $date . "_" . $this->_getConf('filename');
-    file_put_contents($filename, str_replace($this->_newline, PHP_EOL, $results));
+    return Logger::getInstance()->saveFile($this->_replaceEol($results));
   }
 
+  //////////////////////////////////////////////////////////////////////////////
+  /////////////////////////  CONFIGURATION HANDLING  ///////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Loads a configuration
+   * 
+   * @param string $conf_name
+   * @return string
+   */
   protected function _getConf($conf_name) {
     return $this->_config->getConfiguration('report_' . $conf_name);
   }

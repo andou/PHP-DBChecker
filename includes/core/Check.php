@@ -32,6 +32,11 @@ abstract class Check {
   public abstract function getCheckName();
 
   /**
+   * Return the description of the currently performed check
+   */
+  public abstract function getCheckDescription();
+
+  /**
    * Performs a check
    */
   public abstract function check();

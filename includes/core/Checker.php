@@ -20,9 +20,17 @@ class Checker {
   protected $_errors = array();
 
   /**
+   * Tells if we are only describing or also running 
+   *
+   * @var boolean
+   */
+  protected $_only_describe = null;
+
+  /**
    * Class constructor
    */
-  public function __construct() {
+  public function __construct($run = TRUE) {
+    $this->_only_describe = !$run;
     $this->_config = Config::getInstance();
   }
 
@@ -33,7 +41,9 @@ class Checker {
    */
   public function run() {
     $this->retrieveChecksToPerform();
-    $this->performChecks();
+    if (!$this->_only_describe) {
+      $this->performChecks();
+    }
     return $this;
   }
 
@@ -44,6 +54,9 @@ class Checker {
    * @return string
    */
   public function reportResults($newline = "\n") {
+    if ($this->_only_describe) {
+      return $this->describeChecks($newline);
+    }
     $res = sprintf("Total checks: %d, errors spotted: %d%s%s", count($this->_checks), $this->getErrorsNumber(), "$newline", "$newline");
     if ($this->hasErrors()) {
       foreach ($this->_errors as $check_name => $errors) {
@@ -52,6 +65,22 @@ class Checker {
       }
     } else {
       $res .= "Everthing is a-ok!";
+    }
+    return $res;
+  }
+
+  /**
+   * Outputs check descriptions
+   * 
+   * @param string $newline
+   * @return string
+   */
+  public function describeChecks($newline = "\n") {
+    $nl = $newline;
+    $res = sprintf("Total checks: %d%s%s", count($this->_checks), "$nl", "$nl");
+    foreach ($this->_checks as $check) {
+      $active = $check->isActive() ? 'yes' : 'no';
+      $res.=sprintf("Check: %s{$nl}Active: %s{$nl}Description: %s{$nl}{$nl}", $check->getCheckName(), $active, $check->getCheckDescription());
     }
     return $res;
   }

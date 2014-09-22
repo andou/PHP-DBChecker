@@ -48,8 +48,8 @@ class Database {
     if (
             !$this->_getConf('host') ||
             !$this->_getConf('dbname') ||
-            !$this->_getConf('user') ||
-            !$this->_getConf('password')
+            !$this->_getConf('user') 
+//            !$this->_getConf('password')
     ) {
       die('Check your database configurations');
     }

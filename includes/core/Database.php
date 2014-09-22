@@ -121,7 +121,7 @@ class Database {
    * @return string
    */
   protected function _getConf($conf_name) {
-    return $this->getConfiguration('connection_' . $conf_name);
+    return $this->_config->getConfiguration('connection_' . $conf_name);
   }
 
 }

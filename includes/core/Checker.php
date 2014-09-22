@@ -89,9 +89,11 @@ class Checker {
    */
   protected function performChecks() {
     foreach ($this->_checks as $check) {
-      $check->check();
-      if ($check->hasErrors()) {
-        $this->_errors[$check->getCheckName()] = $check->getErrorMessages();
+      if ($check->isActive()) {
+        $check->check();
+        if ($check->hasErrors()) {
+          $this->_errors[$check->getCheckName()] = $check->getErrorMessages();
+        }
       }
     }
   }

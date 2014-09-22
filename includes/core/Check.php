@@ -31,6 +31,26 @@ abstract class Check {
    */
   public abstract function getCheckName();
 
+  /**
+   * Performs a check
+   */
+  public abstract function check();
+
+  /**
+   * Tells if this check has to be done
+   * 
+   * @return boolean
+   */
+  public function isActive() {
+    return TRUE;
+  }
+
+  /**
+   * Class constructor
+   */
+  public function __construct() {
+    
+  }
 
   //////////////////////////////////////////////////////////////////////////////
   /////////////////////////  DATABASE CONNECTION  //////////////////////////////
